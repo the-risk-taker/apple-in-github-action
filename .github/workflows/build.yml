@@ -1,0 +1,54 @@
+name: Build and Test Qt Quick Application
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: 6.5.2
+          host: mac
+          target: desktop
+
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v1
+
+      - name: Build and Test for macOS
+        run: |
+          cmake -S . -B build
+          cmake --build build
+
+  build-ios:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: 6.5.2
+          host: mac
+          target: ios
+
+      - name: Set up CMake
+        uses: jwlawson/actions-setup-cmake@v1
+
+      - name: Build for iOS
+        run: |
+          cmake -S . -B build -DCMAKE_TOOLCHAIN_FILE=$HOME/Qt/6.5.2/ios/mkspecs/macx-ios-clang
+          cmake --build build
